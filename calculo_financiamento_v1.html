@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>Simulação de Financiamento</title>
+        <style>
+    body { font-family: Arial, sans-serif; background-color: #eef2f3; padding: 20px; }
+    .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; margin-bottom: 20px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+    button { width: 100%; padding: 10px; background-color: #28a745; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+    button:hover { background-color: #218838; }
+    .results { margin-top: 20px; }
+    .result-item { background: #f8f9fa; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Simulação de Financiamento</h2>
+            <div class="form-group">
+                <label for="totalValue">Valor Total do Imóvel:</label>
+                <input type="number" id="totalValue" value="300000">
+            </div>
+            <div class="form-group">
+                <label for="downPayment">Valor da Entrada:</label>
+                <input type="number" id="downPayment" value="80000">
+            </div>
+            <div class="form-group">
+                <label for="numberOfInstallments">Número de Parcelas:</label>
+                <input type="number" id="numberOfInstallments" value="360">
+            </div>
+            <div class="form-group">
+                <label for="annualInterestRate">Taxa de Juros Anual (%):</label>
+                <input
+                    type="number"
+                    step="0.01"
+                    id="annualInterestRate"
+                    value="9.25"
+                >
+            </div>
+            <div class="form-group">
+                <label for="condoMonthlyFee">Taxa de Condomínio Mensal:</label>
+                <input type="number" id="condoMonthlyFee" value="0">
+            </div>
+            <div class="form-group">
+                <label for="targetPaymentTerm">Tempo Esperado para Quitar (meses):</label>
+                <input type="number" id="targetPaymentTerm" value="60">
+            </div>
+            <div class="form-group">
+                <label for="extraPayment">Pagamento Extra:</label>
+                <input type="number" id="extraPayment" value="30000">
+            </div>
+            <button onclick="performCalculation()">Calcular</button>
+        </div>
+        <div class="results" id="results"></div>
+        <script>
+          function performCalculation() {
+            const totalValue = parseFloat(document.getElementById('totalValue').value);
+            const downPayment = parseFloat(document.getElementById('downPayment').value);
+            const numberOfInstallments = parseInt(document.getElementById('numberOfInstallments').value, 10);
+            const annualInterestRate = parseFloat(document.getElementById('annualInterestRate').value);
+            const condoMonthlyFee = parseFloat(document.getElementById('condoMonthlyFee').value);
+            const targetPaymentTerm = parseInt(document.getElementById('targetPaymentTerm').value, 10);
+            const extraPayment = parseFloat(document.getElementById('extraPayment').value);
+
+            function simulateFinancing(totalValue, annualInterestRate, numberOfInstallments, downPayment) {
+              // Error handling
+              if (typeof totalValue !== 'number' || totalValue <= 0) {
+                throw new Error('Invalid total property value.');
+              }
+              if (typeof annualInterestRate !== 'number' || annualInterestRate < 0) {
+                throw new Error('Invalid annual interest rate.');
+              }
+              if (!Number.isInteger(numberOfInstallments) || numberOfInstallments <= 0) {
+                throw new Error('Invalid number of installments.');
+              }
+              if (typeof downPayment !== 'number' || downPayment < 0 || downPayment > totalValue) {
+                throw new Error('Invalid down payment value.');
+              }
+            
+              const principal = totalValue - downPayment;
+              const monthlyInterestRate = annualInterestRate / 12 / 100;
+              const amortization = principal / numberOfInstallments;
+              let balance = principal;
+              let totalFinancing = 0;
+              const installments = [];
+            
+              for (let i = 1; i <= numberOfInstallments; i++) {
+                const interest = balance * monthlyInterestRate;
+                const installmentTotal = amortization + interest;
+                balance -= amortization;
+                totalFinancing += installmentTotal;
+            
+                installments.push({
+                  installmentNumber: i,
+                  totalValue: parseFloat(installmentTotal.toFixed(2)),
+                  interest: parseFloat(interest.toFixed(2)),
+                  amortization: parseFloat(amortization.toFixed(2)),
+                  balanceDue: parseFloat(balance.toFixed(2))
+                });
+              }
+            
+              return {
+                totalFinancing: parseFloat(totalFinancing.toFixed(2)),
+                installments: installments
+              };
+            }
+                  
+            function formatCurrency(value) {
+              return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            }
+
+            function calculateAverageInstallmentValue(financing, term) {
+              const total = financing.installments.slice(0, term).reduce((acc, installment) => acc + installment.totalValue, 0);
+              return parseFloat((total / term).toFixed(2));
+            }
+
+            function calculateTotalPaidUtilTerm(financing, term) {
+              return financing.installments.slice(0, term).reduce((acc, installment) => acc + installment.totalValue, 0);
+            }
+
+            function calculateTotalInterestPaidUtilTerm(financing, term) {
+              return financing.installments.slice(0, term).reduce((acc, installment) => acc + installment.interest, 0);
+            }
+
+            try {
+              const financing = simulateFinancing(totalValue, annualInterestRate, numberOfInstallments, downPayment);
+              const averageInstallment = calculateAverageInstallmentValue(financing, targetPaymentTerm);
+              const totalPaidUtilTerm = calculateTotalPaidUtilTerm(financing, targetPaymentTerm);
+              const totalInterestPaidUtilTerm = calculateTotalInterestPaidUtilTerm(financing, targetPaymentTerm);
+              const totalAmortized = financing.installments[targetPaymentTerm - 1].amortization * targetPaymentTerm;
+              const totalPending = financing.installments[targetPaymentTerm - 1].balanceDue;
+              const averageMonthlyAmortization = financing.installments[targetPaymentTerm - 1].balanceDue / targetPaymentTerm;
+              const averageMonthlyWithInterest = averageMonthlyAmortization + averageInstallment;
+              const averageMonthlyWithCondo = averageMonthlyWithInterest + condoMonthlyFee;
+              const averageMonthlyWithExtra = averageMonthlyWithCondo + (extraPayment / targetPaymentTerm);
+              const totalSpent = (averageMonthlyWithExtra * targetPaymentTerm) + downPayment;
+
+              const resultsDiv = document.getElementById('results');
+              resultsDiv.innerHTML = `
+                <div class="result-item">Valor total do financiamento: ${formatCurrency(financing.totalFinancing)}</div>
+                <div class="result-item">Valor médio das parcelas no tempo estipulado: ${formatCurrency(averageInstallment)}</div>
+                <div class="result-item">Total gasto no pagamento de parcelas no tempo estipulado: ${formatCurrency(totalPaidUtilTerm)}</div>
+                <div class="result-item">Total pago de juros no tempo estipulado: ${formatCurrency(totalInterestPaidUtilTerm)}</div>
+                <div class="result-item">Valor total amortizado por parcelas no tempo estipulado: ${formatCurrency(totalAmortized)}</div>
+                <div class="result-item">Total pendente de pagamento: ${formatCurrency(totalPending)}</div>
+                <div class="result-item">Valor médio mensal para pagar amortização no tempo estipulado: ${formatCurrency(averageMonthlyAmortization)}</div>
+                <div class="result-item">Valor médio mensal para quitar no tempo estipulado: ${formatCurrency(averageMonthlyWithInterest)}</div>
+                <div class="result-item">Gasto médio mensal para quitar no tempo estipulado (+ gasto de condomínio): ${formatCurrency(averageMonthlyWithCondo)}</div>
+                <div class="result-item">Valor médio mensal para quitar no tempo estipulado (com gasto extra): ${formatCurrency(averageMonthlyWithExtra)}</div>
+                <div class="result-item">Total gasto ao término da quitação: ${formatCurrency(totalSpent)}</div>
+              `;
+              console.log(financing)
+              //adiciona informações na tabela
+              financing.installments.forEach((installment, index) => {
+                installment.additionalAmortization = averageMonthlyAmortization + (extraPayment / targetPaymentTerm);
+                installment.totalPaidOnMonth = installment.totalValue + installment.additionalAmortization;
+                installment.balanceDueWithAmortization = (financing.installments[index-1]?.balanceDueWithAmortization || totalValue - downPayment + extraPayment) - installment.additionalAmortization - installment.amortization;
+              });
+
+              resultsDiv.innerHTML += `
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                  <thead style="background-color: #007BFF; color: #fff;position: sticky; top: 0;">
+                  <tr>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Parcela</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Valor Total</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Juros</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Amortização</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Saldo Restante</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Amortização Adicional</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Total Pago no Mês</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Saldo Restante Total (com pagamento e amortização extras)</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  ${financing.installments.map((installment, index) => `
+                    <tr style="background-color: ${installment.installmentNumber === targetPaymentTerm ? '#90dd96' : (index % 2 === 0 ? '#f2f2f2' : '#fff')};">
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${installment.installmentNumber}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${formatCurrency(installment.totalValue)}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${formatCurrency(installment.interest)}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${formatCurrency(installment.amortization)}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${formatCurrency(installment.balanceDue)}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${formatCurrency(installment.additionalAmortization)}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${formatCurrency(installment.totalPaidOnMonth)}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${formatCurrency(installment.balanceDueWithAmortization)}</td>
+                    </tr>
+                  `).join('')}
+                  </tbody>
+                </table>
+                `;
+            } catch (error) {
+              alert(error.message);
+            }
+          }
+        </script>
+    </body>
+</html>
