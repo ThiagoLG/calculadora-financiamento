@@ -1,0 +1,54 @@
+.financingForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+
+  .fieldsWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+    align-items: center;
+
+    .formGroup {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-top: 1rem;
+      width: 100%;
+      max-width: 500px;
+
+      input {
+        background: var(--input-background);
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        height: 2rem;
+
+        &:active,
+        &:focus {
+          outline: none;
+          border: 2px solid var(--primary-dark)
+        }
+      }
+    }
+  }
+
+  .buttonWrapper {
+
+    button {
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      transition: 200ms;
+      border: 1px solid var(--primary-dark);
+      background-color: var(--primary);
+
+      &:hover {
+        background-color: var(--primary-light);
+      }
+    }
+  }
+}
