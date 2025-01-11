@@ -31,6 +31,16 @@
           outline: none;
           border: 2px solid var(--primary-dark)
         }
+
+        &[data-invalid="true"] {
+          border: 2px solid var(--danger);
+        }
+      }
+
+      .errorAlert {
+        display: flex;
+        color: var(--danger);
+        font-size: 0.75rem;
       }
     }
   }
