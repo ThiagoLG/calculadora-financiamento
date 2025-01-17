@@ -8,7 +8,7 @@ export class Financing extends BaseEntity {
   private readonly installmentCount: number;
   private readonly interestRate: number;
   private readonly amortizationType: AmortizationType;
-  private totalFinancingCost: number;
+  private totalFinancingCost: number | undefined;
   private installments: Installment[];
 
   constructor(
@@ -17,7 +17,7 @@ export class Financing extends BaseEntity {
     installmentCount: number,
     interestRate: number,
     amortizationType: AmortizationType,
-    totalFinancingCost: number
+    // totalFinancingCost: number
   ) {
     super();
 
@@ -26,7 +26,7 @@ export class Financing extends BaseEntity {
     this.validateinstallmentCount(installmentCount);
     this.validateInterestRate(interestRate);
     this.validateAmortizationType(amortizationType);
-    this.validatetotalFinancingCost(totalFinancingCost);
+    // this.validatetotalFinancingCost(totalFinancingCost);
 
     this.loanAmount = loanAmount;
     this.downPayment = downPayment;
@@ -34,7 +34,7 @@ export class Financing extends BaseEntity {
     this.interestRate = interestRate;
     this.amortizationType = amortizationType;
     this.installments = [];
-    this.totalFinancingCost = totalFinancingCost || 0;
+    // this.totalFinancingCost = totalFinancingCost || 0;
   }
 
   public calculateInstallments() {
@@ -43,7 +43,6 @@ export class Financing extends BaseEntity {
       this.installments = financing.installments;
       this.totalFinancingCost = financing.totalFinancingCost;
     }
-
   }
 
   /**
@@ -77,6 +76,8 @@ export class Financing extends BaseEntity {
       const installmentAmount = amortization + interestAmount;
       balance -= amortization;
       totalFinancingCost += installmentAmount;
+
+      if (balance < 0) balance = 0;
 
       const installment = new Installment(i, installmentAmount, interestAmount, amortization, balance);
 
@@ -130,11 +131,16 @@ export class Financing extends BaseEntity {
       throw new Error('O tipo de amortização deve ser SAC ou Price')
   }
 
-  private validatetotalFinancingCost(totalFinancingCost: number) {
-    if (totalFinancingCost == null)
-      throw new Error('O valor total do financiamento é obrigatório')
-    if (totalFinancingCost < 0)
-      throw new Error('O valor total do financiamento não pode ser negativo')
+  public getInstallments(): Installment[] {
+    return this.installments;
+  }
+
+  public getLoanAmount(): number {
+    return this.loanAmount;
+  }
+
+  public getDownPayment(): number {
+    return this.downPayment;
   }
 
 }

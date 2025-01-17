@@ -60,4 +60,23 @@ export class Installment {
       throw new Error('O saldo devedor não pode ser negativo');
   }
 
+  public getBalance(): number {
+    return this.remainingBalance;
+  }
+
+  public getAmortization(): number {
+    return this.amortizationAmount;
+  }
+
+  public getInterest(): number {
+    return this.interestAmount;
+  }
+
+  public getNumber(): number {
+    return this.number;
+  }
+
+  public getAmount(): number {
+    return this.amount;
+  }
 }

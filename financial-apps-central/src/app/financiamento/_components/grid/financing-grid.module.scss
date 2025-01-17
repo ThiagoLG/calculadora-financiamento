@@ -1,0 +1,52 @@
+.gridContainer {
+  height: clamp(50dvh, 75dvh, 100dvh);
+  overflow: auto;
+  border-radius: 8px;
+
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    // background: var(--soft-background);
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    border-radius: 8px;
+    border: 1px solid var(--soft-background);
+  }
+
+
+  table {
+    width: 100%;
+    border-spacing: 0 2px;
+    border-color: var(--background);
+
+    thead {
+      background-color: var(--foreground);
+      color: var(--primary);
+      height: 2.5rem;
+      position: sticky;
+      top: 0px;
+      
+    }
+
+    tbody {
+      tr {
+        transition: 200ms;
+        background-color: var(--soft-background);
+
+        &:hover {
+          background-color: var(--background);
+        }
+
+        td {
+          padding: 0.5rem;
+        }
+      }
+    }
+  }
+}

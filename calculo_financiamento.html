@@ -275,9 +275,9 @@
         console.log(financing)
         //adiciona informações na tabela
         financing.installments.forEach((installment, index) => {
-        installment.additionalAmortization = averageMonthlyAmortization + (extraPayment / targetPaymentTerm);
-        installment.totalPaidOnMonth = installment.totalValue + installment.additionalAmortization;
-        installment.balanceDueWithAmortization = (financing.installments[index-1]?.balanceDueWithAmortization || totalValue - downPayment + extraPayment) - installment.additionalAmortization - installment.amortization;
+          installment.additionalAmortization = averageMonthlyAmortization + (extraPayment / targetPaymentTerm);
+          installment.totalPaidOnMonth = installment.totalValue + installment.additionalAmortization;
+          installment.balanceDueWithAmortization = (financing.installments[index-1]?.balanceDueWithAmortization || totalValue - downPayment + extraPayment) - installment.additionalAmortization - installment.amortization;
         });
 
         resultsDiv.innerHTML += `
@@ -296,16 +296,16 @@
           </thead>
           <tbody>
           ${financing.installments.map((installment, index) => `
-          <tr style="background-color: ${installment.installmentNumber === targetPaymentTerm ? '#90dd96' : (index % 2 === 0 ? '#f2f2f2' : '#fff')};">
-          <td style="text-align: center;">${installment.installmentNumber}</td>
-          <td>${formatCurrency(installment.totalValue)}</td>
-          <td>${formatCurrency(installment.interest)}</td>
-          <td>${formatCurrency(installment.amortization)}</td>
-          <td>${formatCurrency(installment.balanceDue)}</td>
-          <td>${formatCurrency(installment.additionalAmortization)}</td>
-          <td>${formatCurrency(installment.totalPaidOnMonth)}</td>
-          <td>${formatCurrency(installment.balanceDueWithAmortization)}</td>
-          </tr>
+            <tr style="background-color: ${installment.installmentNumber === targetPaymentTerm ? '#90dd96' : (index % 2 === 0 ? '#f2f2f2' : '#fff')};">
+            <td style="text-align: center;">${installment.installmentNumber}</td>
+            <td>${formatCurrency(installment.totalValue)}</td>
+            <td>${formatCurrency(installment.interest)}</td>
+            <td>${formatCurrency(installment.amortization)}</td>
+            <td>${formatCurrency(installment.balanceDue)}</td>
+            <td>${formatCurrency(installment.additionalAmortization)}</td>
+            <td>${formatCurrency(installment.totalPaidOnMonth)}</td>
+            <td>${formatCurrency(installment.balanceDueWithAmortization)}</td>
+            </tr>
           `).join('')}
           </tbody>
         </table>

@@ -8,9 +8,9 @@ export default function Home() {
         <h1>Selecione a ferramenta que deseja</h1>
         <ul>
           <li>
-            <Link href="/financiamento">Calculadora de juros compostos</Link>
+            <Link href="/financiamento">Calculadora de financiamento</Link>
           </li>
-          <li>Calculadora de financiamento</li>
+          <li>Calculadora de juros compostos</li>
         </ul>
       </main>
       <footer className={styles.footer}>
