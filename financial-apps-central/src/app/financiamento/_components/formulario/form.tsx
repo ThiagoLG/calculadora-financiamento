@@ -140,7 +140,7 @@ export function FormFinancing({ setFinancingPaymentSimulation, setFinancing }: I
               type="number"
               min="0"
               max="100"
-              step="0.1"
+              step="0.01"
               data-invalid={formState?.errors?.interestRate ? 'true' : 'false'}
               {...register('interestRate')}
             />

@@ -40,10 +40,11 @@ export class UCGenerateLoanPaymentSummary {
           acc.averageMonthlyPaymentToSettle = acc.averageMonthlyAmortizationPayment + acc.averageInstallmentValueUntilTarget;
           acc.totalSpentAtSettlement = (acc.averageMonthlyPaymentToSettle * this.paymentTarget) + this.financing.getDownPayment();
         }
+        acc.loanAmount += installment.getAmount();
 
         return acc;
       }, {
-        loanAmount: this.financing.getLoanAmount(),
+        loanAmount: 0,
         averageInstallmentValueUntilTarget: 0,
         totalSpentOnInstallmentsUntilTarget: 0,
         totalInterestPaidUntilTarget: 0,
