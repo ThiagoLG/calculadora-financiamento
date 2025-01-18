@@ -2,6 +2,7 @@
 import { InstallmentSimulation } from '@/application/services/uc-calculate-financing';
 import { NumberFormatter } from '@/shared/utils/number-formatter';
 import styles from './financing-grid.module.scss';
+import { motion } from 'motion/react';
 
 interface FinancingGridProps {
   financingPaymentSimulation: InstallmentSimulation[] | null;
@@ -9,7 +10,7 @@ interface FinancingGridProps {
 export function FinancingGrid({ financingPaymentSimulation }: FinancingGridProps) {
   // console.log(financingPaymentSimulation);
   return (
-    <div className={styles.gridContainer}>
+    <motion.div className={styles.gridContainer}>
       <table>
         <thead>
           <tr>
@@ -32,6 +33,6 @@ export function FinancingGrid({ financingPaymentSimulation }: FinancingGridProps
           ))}
         </tbody>
       </table>
-    </div>
+    </motion.div>
   );
 }

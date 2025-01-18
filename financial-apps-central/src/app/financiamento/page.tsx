@@ -5,7 +5,7 @@ import { FormFinancing } from './_components/formulario/form';
 import { FinancingGrid } from './_components/grid/financing-grid';
 import styles from './page.module.scss';
 import { Financing } from '@/domain/entities/financing';
-import { Resume } from './_components/resume/resume';
+import { PaymentSummary } from './_components/payment-summary/payment-summary';
 
 export default function Financiamento() {
   const [financing, setFinancing] = useState<Financing | null>(null);
@@ -15,7 +15,7 @@ export default function Financiamento() {
       <h1>Calculadora de financiamento</h1>
 
       <FormFinancing setFinancingPaymentSimulation={setFinancingPaymentSimulation} setFinancing={setFinancing} />
-      {financing && <Resume financing={financing} />}
+      {financing && <PaymentSummary financing={financing} />}
       {financingPaymentSimulation && <FinancingGrid financingPaymentSimulation={financingPaymentSimulation} />}
     </div>
   );
